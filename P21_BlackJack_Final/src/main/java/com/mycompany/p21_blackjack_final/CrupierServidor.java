@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -19,14 +20,14 @@ import java.util.concurrent.Executors;
  * @author alumno
  */
 public class CrupierServidor {
-    
+
     private static Set<String> names = new HashSet<>();
     // El conjunto de todos los print writers de los clientes,
     // empleados para hacer la difusión/broadcast.
     private static Set<PrintWriter> writers = new HashSet<>();
 
     public static void main(String[] args) throws Exception {
-        System.out.println("The chat server is running...");
+        System.out.println("The blackjack's server is running...");
         ExecutorService pool = Executors.newFixedThreadPool(500);
         try (ServerSocket listener = new ServerSocket(59001)) {
             while (true) {
@@ -38,6 +39,7 @@ public class CrupierServidor {
          * privada
          */
     }
+
     private static class Handler implements Runnable {
 
         private String name;
@@ -83,19 +85,25 @@ public class CrupierServidor {
                 // nombre. Pero antes de añadirlo mandamos un mensaje a todos los usuarios
                 // que un nuevo usuario se ha añadido al sistema
                 out.println("NAMEACCEPTED " + name);
-                for (PrintWriter writer : writers) {
-                    writer.println("MESSAGE " + name + " se ha unido a la mesa"); // comprobar que la partida no ha empezado
+                System.out.println(name + " se ha unido a la mesa"); // --> Indico quién se ha unido a la mesa
+
+                // Voy a meter la mano del crupier y la voy a mostrar en los usuario, no en el servidor:
+                JuegoCartas juegoCrupier = new JuegoCartas();
+                List<Carta> manoCrupier = juegoCrupier.repartirCartaJugador();
+                out.println("La mano del crupier es ");
+                for (Carta elemento : manoCrupier) {
+                    out.println(elemento);
                 }
+
                 writers.add(out);
                 // Acepta todos los mensajes de este cliente y los difunde.
-                
-                
+
                 //cambiar
                 while (true) {
                     String input = in.nextLine();
                     if (input.toLowerCase().startsWith("/quit")) {
                         return;
-                    } 
+                    }
                 }
             } catch (Exception e) {
                 System.out.println("Exception: " + e);
@@ -106,7 +114,7 @@ public class CrupierServidor {
                     writers.remove(out);
                 }
                 if (name != null) {
-                    System.out.println(name + " is leaving");
+                    System.out.println(name + " se ha ido de la mesa");
                     names.remove(name);
                     for (PrintWriter writer : writers) {
                         writer.println("MESSAGE " + name + " has left");
@@ -122,5 +130,5 @@ public class CrupierServidor {
             }
         }
     }
-    
+
 }

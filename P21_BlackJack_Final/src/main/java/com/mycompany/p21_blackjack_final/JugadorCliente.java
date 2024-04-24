@@ -40,28 +40,27 @@ public class JugadorCliente {
                 }
             }
             
-//            Thread hiloRecepcion = new Thread(new RecepcionMensajesGrupo(s));
-//            hiloRecepcion.start();
             JuegoCartas juego = new JuegoCartas();
             List<Carta> mano = juego.repartirCartaJugador();
             for (Carta elemento : mano) {
-                System.out.println(elemento);
-                
+                System.out.println(elemento);  
             }
             
             
             while(true){
-                System.out.println("1. Envia un mensaje");
-                System.out.println("2. Salir");
+                System.out.println("Valor de la mano: " + juego.valorMano(mano));
+                System.out.println("\n1. Pedir otra carta");
+                System.out.println("2. Doblar apuesta");
+                System.out.println("3. Plantarse");
                 System.out.println("Elija una opcion: ");
                 
                 String opcion = teclado.readLine();
                 
                 if ("1".equals(opcion)) {
-                    System.out.println("Escribe un mensaje a enviar: ");
-                    String mensaje = teclado.readLine();
-                    salidaSocket.println(mensaje);
-                } else if("2".equals(opcion)){
+                    juego.pedirCarta();
+                } else if ("2".equals(opcion)){
+                    System.out.println("Se ha doblado tu apuesta");
+                } else if("3".equals(opcion)){
                     salidaSocket.println("/quit");
                     break;
                 }else{

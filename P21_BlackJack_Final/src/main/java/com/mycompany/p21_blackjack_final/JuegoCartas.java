@@ -15,7 +15,7 @@ import java.util.concurrent.Semaphore;
  */
 public class JuegoCartas {
     private List<Carta> baraja;
-    private List<Carta> mano;
+    private List<Carta> mano = new ArrayList<>(); // --> La saco fuera por si pido más cartas para poder añadirlas
     
     
     public JuegoCartas(){ //jugamos con 2 barajas
@@ -36,14 +36,23 @@ public class JuegoCartas {
     }
     
     public List<Carta> repartirCartaJugador(){ //no comprobamos si la baraja esta vacia ya que se juega con 2 barjas y no se van a acabar(cada partida se renuevan las barajas)
-        mano = new ArrayList<>();
         mano.add(baraja.remove(0));
         mano.add(baraja.remove(1));
         return mano;
     }
     
     public void pedirCarta(){
-        
+        Carta nuevaCarta = baraja.remove(0);
+        mano.add(nuevaCarta); // --> Meto la nueva carta en mi mano
+        System.out.println(nuevaCarta); // --> Muestro la carta metida
+    }
+    
+    public int valorMano(List<Carta> manoJugador){ // --> En cada ronda devuelvo la mano del jugador
+        int valorMano = 0;
+        for (Carta elemento : manoJugador){
+            valorMano += elemento.getValor();
+        }
+        return valorMano;
     }
     
     //ahora lo hago con semaforos
