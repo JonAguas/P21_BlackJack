@@ -86,11 +86,16 @@ public class CrupierServidor {
                 // que un nuevo usuario se ha añadido al sistema
                 out.println("NAMEACCEPTED " + name);
                 System.out.println(name + " se ha unido a la mesa"); // --> Indico quién se ha unido a la mesa
+                
+                // Pedimos al cliente que introduzca la apuesta:
+                out.println("Introduzca la cantidad que quieres apostar: ");
+                int apuesta = in.nextInt();
+                System.out.println("Cantidad apostada por " + name + " es de " + apuesta);
 
                 // Voy a meter la mano del crupier y la voy a mostrar en los usuario, no en el servidor:
                 JuegoCartas juegoCrupier = new JuegoCartas();
                 List<Carta> manoCrupier = juegoCrupier.repartirCartaJugador();
-                out.println("\nEl valor de la mano del crupier es " + juegoCrupier.valorMano(manoCrupier));
+                out.println("El valor de la mano del crupier es " + juegoCrupier.valorMano(manoCrupier));
 
                 writers.add(out);
                 // Acepta todos los mensajes de este cliente y los difunde.
