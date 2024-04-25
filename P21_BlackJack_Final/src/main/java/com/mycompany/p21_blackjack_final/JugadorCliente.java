@@ -40,6 +40,9 @@ public class JugadorCliente {
                 }
             }
             
+            String recibido = entradaSocket.readLine();
+            System.out.println(recibido);
+            
             JuegoCartas juego = new JuegoCartas();
             List<Carta> mano = juego.repartirCartaJugador();
             for (Carta elemento : mano) {

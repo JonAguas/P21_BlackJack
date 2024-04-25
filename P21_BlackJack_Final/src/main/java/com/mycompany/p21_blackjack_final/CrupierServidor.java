@@ -90,10 +90,7 @@ public class CrupierServidor {
                 // Voy a meter la mano del crupier y la voy a mostrar en los usuario, no en el servidor:
                 JuegoCartas juegoCrupier = new JuegoCartas();
                 List<Carta> manoCrupier = juegoCrupier.repartirCartaJugador();
-                out.println("La mano del crupier es ");
-                for (Carta elemento : manoCrupier) {
-                    out.println(elemento);
-                }
+                out.println("\nEl valor de la mano del crupier es " + juegoCrupier.valorMano(manoCrupier));
 
                 writers.add(out);
                 // Acepta todos los mensajes de este cliente y los difunde.
