@@ -159,6 +159,7 @@ public class JugadorCliente {
                 }
 
             } while (valorMano <= 21 && !plantarse);
+            
 
         } catch (IOException e) {
             System.out.println("Exception: " + e);

@@ -45,7 +45,7 @@ public class JuegoCartas {
     public Carta pedirCarta(List<Carta> mano){
         Carta nuevaCarta = baraja.remove(0);
         mano.add(nuevaCarta); // --> Meto la nueva carta en mi mano
-        
+
         return nuevaCarta;
     }
     

@@ -121,7 +121,7 @@ public class CrupierServidor {
                 String opcion2 = Integer.toString(in.nextInt());
                 System.out.println("Opcion recibida: " + opcion2);
                 menu2(opcion, out, juego, manoJugador, valorMano);
-
+ 
                 writers.add(out);
                 // Acepta todos los mensajes de este cliente y los difunde.
 
@@ -202,6 +202,7 @@ public class CrupierServidor {
 
         if (valorManoActual > 21) {
             out.println("Te has pasado de 21, has perdido tu apuesta!");
+            
         }
 
     }
