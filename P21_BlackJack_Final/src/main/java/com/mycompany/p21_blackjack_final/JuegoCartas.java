@@ -36,15 +36,17 @@ public class JuegoCartas {
     }
     
     public List<Carta> repartirCartaJugador(){ //no comprobamos si la baraja esta vacia ya que se juega con 2 barjas y no se van a acabar(cada partida se renuevan las barajas)
+        List<Carta> mano = new ArrayList<>(); //para que cada uno tenga su propia mano
         mano.add(baraja.remove(0));
         mano.add(baraja.remove(1));
         return mano;
     }
     
-    public void pedirCarta(){
+    public Carta pedirCarta(List<Carta> mano){
         Carta nuevaCarta = baraja.remove(0);
         mano.add(nuevaCarta); // --> Meto la nueva carta en mi mano
-        System.out.println(nuevaCarta); // --> Muestro la carta metida
+        
+        return nuevaCarta;
     }
     
     public int valorMano(List<Carta> manoJugador){ // --> En cada ronda devuelvo la mano del jugador

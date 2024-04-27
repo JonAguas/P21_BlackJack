@@ -18,7 +18,7 @@ import java.util.List;
 public class JugadorCliente {
 
     private static final String SERVER_ADREES = "127.0.0.1";
-    private static final int SERVER_PORT = 59001;
+    private static final int SERVER_PORT = 59002;
     private static String recibido;
 
     /**
@@ -57,23 +57,23 @@ public class JugadorCliente {
 
             // Mostramos la mano del crupier:
             recibido = entradaSocket.readLine();
-            System.out.println("\n" + recibido);
+            System.out.println("\n" + recibido + "\n");
 
-            JuegoCartas juego = new JuegoCartas();
-            List<Carta> mano = juego.repartirCartaJugador();
-            System.out.println("\nTus cartas son: ");
-            for (Carta elemento : mano) {
-                System.out.println(elemento);
+            //mostrar mano jugador
+            String recibido;
+            while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+                System.out.println(recibido);
             }
 
-            int valorManoActual = juego.valorMano(mano);
+            //mostrar valo mano
+            int valorMano = Integer.parseInt(entradaSocket.readLine());
+            System.out.println("El valor de tus cartas es de " + valorMano);
 
-            boolean salir = menu1(juego, mano, teclado, valorManoActual, salidaSocket);
+            boolean salir = menu1(teclado, entradaSocket, salidaSocket, valorMano);
 
-            if (!salir){
-                menu2(juego, mano, teclado, valorManoActual, salidaSocket);
+            if (!salir) {
+                menu2(teclado, entradaSocket, salidaSocket, valorMano);
             }
-
             s.close();
 
         } catch (IOException e) {
@@ -83,31 +83,38 @@ public class JugadorCliente {
         }
     }
 
-    private static boolean menu1(JuegoCartas juego, List<Carta> mano, BufferedReader teclado, int valorManoActual, PrintWriter salidaSocket) {
+    private static boolean menu1(BufferedReader teclado, BufferedReader entradaSocket, PrintWriter salidaSocket, int valorMano) {
         boolean salir = false;
         try {
-            System.out.println("Valor de la mano: " + juego.valorMano(mano));
             System.out.println("\n1. Pedir otra carta");
             System.out.println("2. Doblar apuesta"); // Solo se puede doblar al principio
             System.out.println("3. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
             System.out.println("4. Salir de la mesa");
             System.out.println("Elija una opcion: ");
 
-            String opcion = teclado.readLine();
+            int opcion_int = Integer.parseInt(teclado.readLine());
+            salidaSocket.println(opcion_int);
+            String opcion = Integer.toString(opcion_int);
 
             if ("1".equals(opcion)) {
-                juego.pedirCarta();
-                valorManoActual = juego.valorMano(mano);
+                String recibido;
+                while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+                    System.out.println(recibido);
+                }
             } else if ("2".equals(opcion)) {
-                System.out.println("Se ha doblado tu apuesta");
+                recibido = entradaSocket.readLine();
+                System.out.println(recibido);
             } else if ("3".equals(opcion)) {
-                System.out.println("Te has plantado con " + juego.valorMano(mano));
+                recibido = entradaSocket.readLine();
+                System.out.println(recibido);
                 salir = true;
             } else if ("4".equals(opcion)) {
                 salir = true;
             } else {
-                System.out.println("Opcion incorrecta");
+                recibido = entradaSocket.readLine();
+                System.out.println(recibido);
             }
+
         } catch (IOException e) {
             System.out.println("Exception: " + e);
             System.out.println("Message: " + e.getMessage());
@@ -116,35 +123,43 @@ public class JugadorCliente {
         return salir;
     }
 
-    private static void menu2(JuegoCartas juego, List<Carta> mano, BufferedReader teclado, int valorManoActual, PrintWriter salidaSocket) {
+    private static void menu2(BufferedReader teclado, BufferedReader entradaSocket, PrintWriter salidaSocket, int valorMano) {
         try {
             boolean plantarse = false;
             do {
-                System.out.println("Valor de la mano: " + juego.valorMano(mano));
                 System.out.println("\n1. Pedir otra carta");
                 System.out.println("2. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
                 System.out.println("3. Salir de la mesa");
                 System.out.println("Elija una opcion: ");
 
-                String opcion = teclado.readLine();
+                int opcion_int = Integer.parseInt(teclado.readLine());
+                salidaSocket.println(opcion_int);
+                String opcion = Integer.toString(opcion_int);
 
                 if ("1".equals(opcion)) {
-                    juego.pedirCarta();
-                    valorManoActual = juego.valorMano(mano);
+                    String recibido;
+                    while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+                        System.out.println(recibido);
+                    }
                 } else if ("2".equals(opcion)) {
-                    System.out.println("Te has plantado con " + juego.valorMano(mano));
+                    recibido = entradaSocket.readLine();
+                    System.out.println(recibido);
                     plantarse = true;
-                } else if ("3".equals(opcion)) {
-                    salidaSocket.println("/quit");
-                    break;
+                } else if ("3".equals(opcion)) { //hay q ver que ponemos aqui
                 } else {
-                    System.out.println("Opcion incorrecta");
+                    recibido = entradaSocket.readLine();
+                    System.out.println(recibido);
+                }
+                
+                recibido = entradaSocket.readLine();
+                if (recibido.startsWith("Te has pasado de 21")){
+                    recibido = entradaSocket.readLine();
+                    System.out.println(recibido);
+                    break;
                 }
 
-            } while (valorManoActual <= 21 && !plantarse);
-            if (valorManoActual > 21) {
-                System.out.println("Te has pasado de 21, has perdido tu apuesta!");
-            }
+            } while (valorMano <= 21 && !plantarse);
+
         } catch (IOException e) {
             System.out.println("Exception: " + e);
             System.out.println("Message: " + e.getMessage());
