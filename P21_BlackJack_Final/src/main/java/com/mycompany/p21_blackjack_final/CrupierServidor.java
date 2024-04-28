@@ -182,13 +182,14 @@ public class CrupierServidor {
             sb.append("Te has plantado con " + valorManoActual);
             plantarse = true;
         } else if ("4".equals(opcion)) { //que meter aqui
+            sb.append("Has salido de la mesa");
             salir = true;
         } else {
             sb.append("Opcion incorrecta");
         }
 
         if (valorManoActual > 21) {
-            sb.append("\n Te has pasado de 21, has perdido tu apuesta!");
+            sb.append("\nTe has pasado de 21, has perdido tu apuesta!");
             salir = true;
         }
 
@@ -217,13 +218,14 @@ public class CrupierServidor {
             sb.append("Te has plantado con " + valorManoActual);
             plantarse = true;
         } else if ("3".equals(opcion)) {
+            sb.append("Has salido de la mesa");
             salir = true;
         } else {
             sb.append("Opcion incorrecta");
         }
 
         if (valorManoActual > 21) {
-            sb.append("\n Te has pasado de 21, has perdido tu apuesta!");
+            sb.append("\nTe has pasado de 21, has perdido tu apuesta!");
             salir = true;
         }
 

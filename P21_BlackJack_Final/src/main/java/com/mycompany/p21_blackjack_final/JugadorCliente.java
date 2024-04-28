@@ -78,27 +78,43 @@ public class JugadorCliente {
             System.out.println("Elija una opcion: ");
 
             String opcion1 = teclado.readLine();
-            if ("4".equals(opcion1)) {
-                salidaSocket.println("/quit");
+            salidaSocket.println(opcion1);
+
+            boolean salir = false;
+            recibido = entradaSocket.readLine();
+            if (recibido.startsWith("Has salido de la mesa") || recibido.startsWith("Te has plantado")) {
+                System.out.println(recibido);
+                salir = true;
             } else {
-                salidaSocket.println(opcion1);
+                System.out.println(recibido);
                 while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+                    if (recibido.startsWith("Te has pasado de 21")) {
+                        salir = true;
+                    }
                     System.out.println(recibido);
                 }
+            }
 
-                // Mostrar el menu2 desde el servidor:
+            // Mostrar el menu2 desde el servidor:
+            while (!salir) {
                 System.out.println("\n1. Pedir otra carta");
                 System.out.println("2. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
                 System.out.println("3. Salir de la mesa");
                 System.out.println("Elija una opcion: ");
 
                 String opcion2 = teclado.readLine();
+                salidaSocket.println(opcion2);
 
-                if ("3".equals(opcion2)) {
-                    salidaSocket.println("/quit");
+                recibido = entradaSocket.readLine();
+                if (recibido.startsWith("Has salido de la mesa") || recibido.startsWith("Te has plantado")) {
+                    System.out.println(recibido);
+                    salir = true;
                 } else {
-                    salidaSocket.println(opcion2);
+                    System.out.println(recibido);
                     while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+                        if (recibido.startsWith("Te has pasado de 21")) {
+                            salir = true;
+                        }
                         System.out.println(recibido);
                     }
                 }
