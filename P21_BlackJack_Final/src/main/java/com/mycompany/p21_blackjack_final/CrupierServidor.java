@@ -90,12 +90,13 @@ public class CrupierServidor {
                 // Pedimos al cliente que introduzca la apuesta:
                 out.println("Introduzca la cantidad que quieres apostar: ");
                 int apuesta = in.nextInt();
-                System.out.println("Cantidad apostada por " + name + " es de " + apuesta);
+                System.out.println("Cantidad apostada por " + name + " es de " + apuesta + "€");
 
                 // Voy a meter la mano del crupier y la voy a mostrar en los usuario, no en el servidor:
                 JuegoCartas juego = new JuegoCartas();
                 List<Carta> manoCrupier = juego.repartirCartaJugador();
-                out.println("El valor de la mano del crupier es " + juego.valorMano(manoCrupier));
+                int valorManoCrupier = juego.valorMano(manoCrupier);
+                out.println("El valor de la mano del crupier es " + valorManoCrupier);
 
                 List<Carta> manoJugador = juego.repartirCartaJugador();
                 int valorMano = juego.valorMano(manoJugador);
@@ -122,13 +123,13 @@ public class CrupierServidor {
 
                 //leemos las opciones del jugador y las mostramos en el servidor
                 System.out.println("Opcion recibida del jugador " + name + ": " + opcion);
-                resultados = menu1(opcion, out, juego, manoJugador, valorMano);
+                resultados = menu1(apuesta,name, opcion, out, juego, manoJugador, valorMano);
                 plantarse = resultados[0];
                 salirMesa = resultados[1];
 
                 while (!salirMesa) { // El primer menú se ejecuta sí o sí, el segundo depende de si se ha plantado o salido de la mesas
                     if (plantarse) {
-                        // Aquí el código por si se planta
+                        jugadorSePlanta(out, valorMano, valorManoCrupier, manoCrupier, juego);
                     } else if (!salirMesa) {
                         opcion = in.next();
                         System.out.println("Opcion recibida del jugador " + name + ": " + opcion);
@@ -164,7 +165,7 @@ public class CrupierServidor {
     }
 
     // ESTO EN NINGÚN MOMENTO SE EJECUTA, SE EJECUTAN LOS MENUS QUE ESTÁN DENTRO DEL CLIENTE
-    private static boolean[] menu1(String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
+    private static boolean[] menu1(int apuesta, String name, String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
         StringBuilder sb = new StringBuilder();
         boolean plantarse = false;
         boolean salir = false;
@@ -175,9 +176,10 @@ public class CrupierServidor {
             sb.append("Tu carta es ");
             sb.append(cartaNueva).append("\n");
             sb.append("Ahora el valor de tu mano es " + Integer.toString(valorManoActual));
-
         } else if ("2".equals(opcion)) {
-            sb.append("Se ha doblado tu apuesta");
+            apuesta *= 2;
+            sb.append("Se ha doblado tu apuesta a: " + apuesta + "€");
+            System.out.println(name + " ha doblado su apuesta a: " + apuesta + "€");
         } else if ("3".equals(opcion)) {
             sb.append("Te has plantado con " + valorManoActual);
             plantarse = true;
@@ -236,6 +238,19 @@ public class CrupierServidor {
         resultados[0] = plantarse;
         resultados[1] = salir;
         return resultados;
+    }
+    
+    private static void jugadorSePlanta(PrintWriter out, int valorManoJugador, int valorManoCrupier, List<Carta> manoCrupier, JuegoCartas juego){
+        StringBuilder sb = new StringBuilder();
+        while(valorManoCrupier<17){
+            Carta nuevaCarta = juego.pedirCarta(manoCrupier);
+            manoCrupier.add(nuevaCarta);
+            sb.append("El crupier obtiene el: " + nuevaCarta.toString());
+            valorManoCrupier = juego.valorMano(manoCrupier);
+            sb.append("Ahora el valor de su mano es de: " + valorManoCrupier);
+        }
+        out.println(sb.toString());
+        out.println();
     }
 
 //    private static StringBuilder menu2(String opcion, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
