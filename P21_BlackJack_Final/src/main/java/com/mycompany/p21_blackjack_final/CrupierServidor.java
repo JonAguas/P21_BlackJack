@@ -104,23 +104,36 @@ public class CrupierServidor {
                 sb.append("Tus cartas son: ");
                 sb.append("\n");
                 for (Carta carta : manoJugador) {
-                    sb.append(carta).append("\n ");
+                    sb.append(carta).append("\n");
                 }
                 out.println(sb.toString());
-                out.println(); //para que sepa que a acabado en el cliente
+                out.println(); //para que sepa que ha acabado en el cliente
 
-                //enviamos valor de la mano
+                //enviamos el valor de la mano
                 sb = new StringBuilder();
                 out.println(sb.append(valorMano).toString());
+                
+//                -------------------------------------------------------------------- Hasta aquí bien
+                
+                // El servidor se encarga de enviar el menú al cliente
+                
+                //leemos las opciones del jugador y las mostramos en el servidor
+                String opcion1 = in.next();
+                System.out.println("Opcion recibida: " + opcion1);
+                StringBuilder sbMenu1 = menu1(opcion1, out, juego, manoJugador, valorMano);
+                out.println(sbMenu1);
+                out.println(); // --> Simulo un salto de línea
 
-                //leermos las opciones del jugador
-                String opcion = Integer.toString(in.nextInt());
-                System.out.println("Opcion recibida: " + opcion);
-                menu1(opcion, out, juego, manoJugador, valorMano);
-
-                String opcion2 = Integer.toString(in.nextInt());
+                
+                String opcion2 = in.next();
                 System.out.println("Opcion recibida: " + opcion2);
-                menu2(opcion, out, juego, manoJugador, valorMano);
+                StringBuilder sbMenu2 = menu2(opcion2, out, juego, manoJugador, valorMano);
+                out.println(sbMenu2);
+                
+                
+//                String opcion2 = Integer.toString(in.nextInt());
+//                System.out.println("Opcion recibida: " + opcion2);
+//                menu2(opcion, out, juego, manoJugador, valorMano);
  
                 writers.add(out);
                 // Acepta todos los mensajes de este cliente y los difunde.
@@ -157,8 +170,10 @@ public class CrupierServidor {
             }
         }
     }
-
-    private static void menu1(String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
+    
+    
+    // ESTO EN NINGÚN MOMENTO SE EJECUTA, SE EJECUTAN LOS MENUS QUE ESTÁN DENTRO DEL CLIENTE
+    private static StringBuilder menu1(String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
         StringBuilder sb = new StringBuilder();
 
         if ("1".equals(opcion)) {
@@ -167,19 +182,19 @@ public class CrupierServidor {
             sb.append("Tu carta es ");
             sb.append(cartaNueva).append("\n");
             sb.append("Ahora el valor de tu mano es " + Integer.toString(valorManoActual));
-            out.println(sb.toString());
-            out.println();
         } else if ("2".equals(opcion)) {
-            out.println("Se ha doblado tu apuesta");
+            sb.append("Se ha doblado tu apuesta");
         } else if ("3".equals(opcion)) {
-            out.println("Te has plantado con " + valorManoActual);
+            sb.append("Te has plantado con " + valorManoActual);
         } else if ("4".equals(opcion)) { //que meter aqui
+//            return;
         } else {
-            out.println("Opcion incorrecta");
+            sb.append("Opcion incorrecta");
         }
+        return sb;
     }
 
-    private static void menu2(String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
+    private static StringBuilder menu2(String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
         StringBuilder sb = new StringBuilder();
         boolean salir = false;
         boolean plantarse = false;
@@ -190,21 +205,20 @@ public class CrupierServidor {
             sb.append("Tu carta es ");
             sb.append(cartaNueva).append("\n");
             sb.append("Ahora el valor de tu mano es " + Integer.toString(valorManoActual));
-            out.println(sb.toString());
-            out.println();
         } else if ("2".equals(opcion)) {
-            out.println("Te has plantado con " + valorManoActual);
-            salir = true;
+            sb.append("Te has plantado con " + valorManoActual);
+//            salir = true;
         } else if ("3".equals(opcion)) {
+//            return;
         } else {
             out.println("Opcion incorrecta");
         }
 
         if (valorManoActual > 21) {
-            out.println("Te has pasado de 21, has perdido tu apuesta!");
+            sb.append("\n Te has pasado de 21, has perdido tu apuesta!");
             
         }
-
+        return sb;
     }
 
 }

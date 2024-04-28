@@ -59,21 +59,55 @@ public class JugadorCliente {
             recibido = entradaSocket.readLine();
             System.out.println("\n" + recibido + "\n");
 
-            //mostrar mano jugador
-            String recibido;
+            //mostrar la mano del jugador
             while (!(recibido = entradaSocket.readLine()).isEmpty()) {
                 System.out.println(recibido);
             }
 
-            //mostrar valo mano
-            int valorMano = Integer.parseInt(entradaSocket.readLine());
+            //mostrar valor de la mano
+            entradaSocket.read(); // --> Sino el valor de la mano se me imprimia tarde
+            String valorMano = entradaSocket.readLine();
             System.out.println("El valor de tus cartas es de " + valorMano);
+//                -------------------------------------------------------------------- Hasta aquí bien
+            
+            // Mostrar el menu1 desde el servidor:
+            
+            System.out.println("\n1. Pedir otra carta");
+            System.out.println("2. Doblar apuesta"); // Solo se puede doblar al principio
+            System.out.println("3. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
+            System.out.println("4. Salir de la mesa");
+            System.out.println("Elija una opcion: ");
 
-            boolean salir = menu1(teclado, entradaSocket, salidaSocket, valorMano);
-
-            if (!salir) {
-                menu2(teclado, entradaSocket, salidaSocket, valorMano);
+            String opcion1 = teclado.readLine();
+            if ("4".equals(opcion1)) { 
+                salidaSocket.println("/quit");
             }
+            salidaSocket.println(opcion1);
+            
+            while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+                System.out.println(recibido);
+            }
+            
+            // Mostrar el menu2 desde el servidor:
+            
+            System.out.println("\n1. Pedir otra carta");
+            System.out.println("2. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
+            System.out.println("3. Salir de la mesa");
+            System.out.println("Elija una opcion: ");
+            
+            String opcion2 = teclado.readLine();
+            
+            salidaSocket.println(opcion2);
+            
+            while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+                System.out.println(recibido);
+            }
+            
+//            boolean salir = menu1(teclado, entradaSocket, salidaSocket, valorMano);
+
+//            if (!salir) {
+//                menu2(teclado, entradaSocket, salidaSocket, valorMano);
+//            }
             s.close();
 
         } catch (IOException e) {
@@ -145,7 +179,9 @@ public class JugadorCliente {
                     recibido = entradaSocket.readLine();
                     System.out.println(recibido);
                     plantarse = true;
-                } else if ("3".equals(opcion)) { //hay q ver que ponemos aqui
+                } else if ("3".equals(opcion)) { 
+                    salidaSocket.println("/quit");
+                    break;
                 } else {
                     recibido = entradaSocket.readLine();
                     System.out.println(recibido);
