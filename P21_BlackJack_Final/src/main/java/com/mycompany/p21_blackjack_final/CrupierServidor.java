@@ -112,37 +112,39 @@ public class CrupierServidor {
                 //enviamos el valor de la mano
                 sb = new StringBuilder();
                 out.println(sb.append(valorMano).toString());
-                
+
 //                -------------------------------------------------------------------- Hasta aquí bien
-                
                 // El servidor se encarga de enviar el menú al cliente
-                
+                String opcion = in.next();
+                boolean salirMesa = false;
+                boolean plantarse = false;
+
                 //leemos las opciones del jugador y las mostramos en el servidor
-                String opcion1 = in.next();
-                System.out.println("Opcion recibida: " + opcion1);
-                StringBuilder sbMenu1 = menu1(opcion1, out, juego, manoJugador, valorMano);
-                out.println(sbMenu1);
-                out.println(); // --> Simulo un salto de línea
+                if (opcion.toLowerCase().startsWith("/quit")) {
+                    salirMesa = true;
+                } else if (opcion.equals("2")) {
+                    // Aqui doblamos la apuesta
+                } else if (opcion.equals("3")) {
+                    plantarse = true;
+                } else {
+                    System.out.println("Opcion recibida del jugador " + name + ": " + opcion);
+                    StringBuilder sbMenu1 = menu1(opcion, juego, manoJugador, valorMano);
+                    out.println(sbMenu1);
+                    out.println(); // --> Simulo un salto de línea
+                }
 
-                
-                String opcion2 = in.next();
-                System.out.println("Opcion recibida: " + opcion2);
-                StringBuilder sbMenu2 = menu2(opcion2, out, juego, manoJugador, valorMano);
-                out.println(sbMenu2);
-                
-                
-//                String opcion2 = Integer.toString(in.nextInt());
-//                System.out.println("Opcion recibida: " + opcion2);
-//                menu2(opcion, out, juego, manoJugador, valorMano);
- 
-                writers.add(out);
-                // Acepta todos los mensajes de este cliente y los difunde.
-
-                //cambiar
-                while (true) {
-                    String input = in.nextLine();
-                    if (input.toLowerCase().startsWith("/quit")) {
-                        return;
+                while (!salirMesa) { // El primer menú se ejecuta sí o sí, el segundo depende de si se ha plantado o salido de la mesas
+                    if (plantarse) {
+                        // Aquí el código por si se planta
+                    } else if (!salirMesa) {
+                        opcion = in.next();
+                        System.out.println("Opcion recibida del jugador " + name + ": " + opcion);
+                        StringBuilder sbMenu2 = menu2(opcion, juego, manoJugador, valorMano);
+                        out.println(sbMenu2);
+                        if (opcion.toLowerCase().startsWith("/quit")) {
+                            salirMesa = true;
+                            return;
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -170,10 +172,9 @@ public class CrupierServidor {
             }
         }
     }
-    
-    
+
     // ESTO EN NINGÚN MOMENTO SE EJECUTA, SE EJECUTAN LOS MENUS QUE ESTÁN DENTRO DEL CLIENTE
-    private static StringBuilder menu1(String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
+    private static StringBuilder menu1(String opcion, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
         StringBuilder sb = new StringBuilder();
 
         if ("1".equals(opcion)) {
@@ -194,7 +195,7 @@ public class CrupierServidor {
         return sb;
     }
 
-    private static StringBuilder menu2(String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
+    private static StringBuilder menu2(String opcion, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
         StringBuilder sb = new StringBuilder();
         boolean salir = false;
         boolean plantarse = false;
@@ -211,12 +212,12 @@ public class CrupierServidor {
         } else if ("3".equals(opcion)) {
 //            return;
         } else {
-            out.println("Opcion incorrecta");
+            sb.append("Opcion incorrecta");
         }
 
         if (valorManoActual > 21) {
             sb.append("\n Te has pasado de 21, has perdido tu apuesta!");
-            
+
         }
         return sb;
     }

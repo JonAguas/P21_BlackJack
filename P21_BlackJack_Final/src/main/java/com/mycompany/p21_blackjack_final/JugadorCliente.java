@@ -69,9 +69,8 @@ public class JugadorCliente {
             String valorMano = entradaSocket.readLine();
             System.out.println("El valor de tus cartas es de " + valorMano);
 //                -------------------------------------------------------------------- Hasta aquí bien
-            
+
             // Mostrar el menu1 desde el servidor:
-            
             System.out.println("\n1. Pedir otra carta");
             System.out.println("2. Doblar apuesta"); // Solo se puede doblar al principio
             System.out.println("3. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
@@ -79,32 +78,33 @@ public class JugadorCliente {
             System.out.println("Elija una opcion: ");
 
             String opcion1 = teclado.readLine();
-            if ("4".equals(opcion1)) { 
+            if ("4".equals(opcion1)) {
                 salidaSocket.println("/quit");
-            }
-            salidaSocket.println(opcion1);
-            
-            while (!(recibido = entradaSocket.readLine()).isEmpty()) {
-                System.out.println(recibido);
-            }
-            
-            // Mostrar el menu2 desde el servidor:
-            
-            System.out.println("\n1. Pedir otra carta");
-            System.out.println("2. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
-            System.out.println("3. Salir de la mesa");
-            System.out.println("Elija una opcion: ");
-            
-            String opcion2 = teclado.readLine();
-            
-            salidaSocket.println(opcion2);
-            
-            while (!(recibido = entradaSocket.readLine()).isEmpty()) {
-                System.out.println(recibido);
-            }
-            
-//            boolean salir = menu1(teclado, entradaSocket, salidaSocket, valorMano);
+            } else {
+                salidaSocket.println(opcion1);
+                while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+                    System.out.println(recibido);
+                }
 
+                // Mostrar el menu2 desde el servidor:
+                System.out.println("\n1. Pedir otra carta");
+                System.out.println("2. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
+                System.out.println("3. Salir de la mesa");
+                System.out.println("Elija una opcion: ");
+
+                String opcion2 = teclado.readLine();
+
+                if ("3".equals(opcion2)) {
+                    salidaSocket.println("/quit");
+                } else {
+                    salidaSocket.println(opcion2);
+                    while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+                        System.out.println(recibido);
+                    }
+                }
+            }
+
+//            boolean salir = menu1(teclado, entradaSocket, salidaSocket, valorMano);
 //            if (!salir) {
 //                menu2(teclado, entradaSocket, salidaSocket, valorMano);
 //            }
@@ -179,23 +179,22 @@ public class JugadorCliente {
                     recibido = entradaSocket.readLine();
                     System.out.println(recibido);
                     plantarse = true;
-                } else if ("3".equals(opcion)) { 
+                } else if ("3".equals(opcion)) {
                     salidaSocket.println("/quit");
                     break;
                 } else {
                     recibido = entradaSocket.readLine();
                     System.out.println(recibido);
                 }
-                
+
                 recibido = entradaSocket.readLine();
-                if (recibido.startsWith("Te has pasado de 21")){
+                if (recibido.startsWith("Te has pasado de 21")) {
                     recibido = entradaSocket.readLine();
                     System.out.println(recibido);
                     break;
                 }
 
             } while (valorMano <= 21 && !plantarse);
-            
 
         } catch (IOException e) {
             System.out.println("Exception: " + e);
