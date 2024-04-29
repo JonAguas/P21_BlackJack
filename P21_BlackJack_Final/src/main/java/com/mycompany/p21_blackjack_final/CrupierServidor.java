@@ -254,10 +254,11 @@ public class CrupierServidor {
             sb.append("\nEl crupier se ha pasado de 21\nHAS GANADO!!!");
         } else if (valorManoCrupier > valorManoJugador[0]) {
             sb.append("\nEl crupier tiene mejor mano\nHAS PERDIDO!!!");
-        } else if (valorManoCrupier > valorManoJugador[0]) {
+        } else if (valorManoCrupier < valorManoJugador[0]) {
             sb.append("\nTienes mejor mano que el crupier\nHAS GANADO!!!");
+        }else if (valorManoCrupier == valorManoJugador[0]) {
+            sb.append("\nTeneis la misma mano, se te devuelve la apuesta");
         }
-
         out.println(sb.toString());
         out.println();
     }

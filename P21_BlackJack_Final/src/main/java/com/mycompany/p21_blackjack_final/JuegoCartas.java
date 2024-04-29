@@ -52,7 +52,15 @@ public class JuegoCartas {
     public int valorMano(List<Carta> manoJugador){ // --> En cada ronda devuelvo la mano del jugador
         int valorMano = 0;
         for (Carta elemento : manoJugador){
-            valorMano += elemento.getValor();
+            if (elemento.getValor() == 1) {
+                if ((valorMano + 11) < 21 ) {
+                    valorMano += 11;
+                } else {
+                    valorMano += elemento.getValor();
+                }
+            }else{
+                valorMano += elemento.getValor();
+            }
         }
         return valorMano;
     }

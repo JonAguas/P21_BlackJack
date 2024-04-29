@@ -148,91 +148,91 @@ public class JugadorCliente {
             e.printStackTrace(System.err);
         }
     }
-
-    private static boolean menu1(BufferedReader teclado, BufferedReader entradaSocket, PrintWriter salidaSocket, int valorMano) {
-        boolean salir = false;
-        try {
-            System.out.println("\n1. Pedir otra carta");
-            System.out.println("2. Doblar apuesta"); // Solo se puede doblar al principio
-            System.out.println("3. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
-            System.out.println("4. Salir de la mesa");
-            System.out.println("Elija una opcion: ");
-
-            int opcion_int = Integer.parseInt(teclado.readLine());
-            salidaSocket.println(opcion_int);
-            String opcion = Integer.toString(opcion_int);
-
-            if ("1".equals(opcion)) {
-                String recibido;
-                while (!(recibido = entradaSocket.readLine()).isEmpty()) {
-                    System.out.println(recibido);
-                }
-            } else if ("2".equals(opcion)) {
-                recibido = entradaSocket.readLine();
-                System.out.println(recibido);
-            } else if ("3".equals(opcion)) {
-                recibido = entradaSocket.readLine();
-                System.out.println(recibido);
-                salir = true;
-            } else if ("4".equals(opcion)) {
-                salir = true;
-            } else {
-                recibido = entradaSocket.readLine();
-                System.out.println(recibido);
-            }
-
-        } catch (IOException e) {
-            System.out.println("Exception: " + e);
-            System.out.println("Message: " + e.getMessage());
-            e.printStackTrace(System.err);
-        }
-        return salir;
-    }
-
-    private static void menu2(BufferedReader teclado, BufferedReader entradaSocket, PrintWriter salidaSocket, int valorMano) {
-        try {
-            boolean plantarse = false;
-            do {
-                System.out.println("\n1. Pedir otra carta");
-                System.out.println("2. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
-                System.out.println("3. Salir de la mesa");
-                System.out.println("Elija una opcion: ");
-
-                int opcion_int = Integer.parseInt(teclado.readLine());
-                salidaSocket.println(opcion_int);
-                String opcion = Integer.toString(opcion_int);
-
-                if ("1".equals(opcion)) {
-                    String recibido;
-                    while (!(recibido = entradaSocket.readLine()).isEmpty()) {
-                        System.out.println(recibido);
-                    }
-                } else if ("2".equals(opcion)) {
-                    recibido = entradaSocket.readLine();
-                    System.out.println(recibido);
-                    plantarse = true;
-                } else if ("3".equals(opcion)) {
-                    salidaSocket.println("/quit");
-                    break;
-                } else {
-                    recibido = entradaSocket.readLine();
-                    System.out.println(recibido);
-                }
-
-                recibido = entradaSocket.readLine();
-                if (recibido.startsWith("Te has pasado de 21")) {
-                    recibido = entradaSocket.readLine();
-                    System.out.println(recibido);
-                    break;
-                }
-
-            } while (valorMano <= 21 && !plantarse);
-
-        } catch (IOException e) {
-            System.out.println("Exception: " + e);
-            System.out.println("Message: " + e.getMessage());
-            e.printStackTrace(System.err);
-
-        }
-    }
+//
+//    private static boolean menu1(BufferedReader teclado, BufferedReader entradaSocket, PrintWriter salidaSocket, int valorMano) {
+//        boolean salir = false;
+//        try {
+//            System.out.println("\n1. Pedir otra carta");
+//            System.out.println("2. Doblar apuesta"); // Solo se puede doblar al principio
+//            System.out.println("3. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
+//            System.out.println("4. Salir de la mesa");
+//            System.out.println("Elija una opcion: ");
+//
+//            int opcion_int = Integer.parseInt(teclado.readLine());
+//            salidaSocket.println(opcion_int);
+//            String opcion = Integer.toString(opcion_int);
+//
+//            if ("1".equals(opcion)) {
+//                String recibido;
+//                while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+//                    System.out.println(recibido);
+//                }
+//            } else if ("2".equals(opcion)) {
+//                recibido = entradaSocket.readLine();
+//                System.out.println(recibido);
+//            } else if ("3".equals(opcion)) {
+//                recibido = entradaSocket.readLine();
+//                System.out.println(recibido);
+//                salir = true;
+//            } else if ("4".equals(opcion)) {
+//                salir = true;
+//            } else {
+//                recibido = entradaSocket.readLine();
+//                System.out.println(recibido);
+//            }
+//
+//        } catch (IOException e) {
+//            System.out.println("Exception: " + e);
+//            System.out.println("Message: " + e.getMessage());
+//            e.printStackTrace(System.err);
+//        }
+//        return salir;
+//    }
+//
+//    private static void menu2(BufferedReader teclado, BufferedReader entradaSocket, PrintWriter salidaSocket, int valorMano) {
+//        try {
+//            boolean plantarse = false;
+//            do {
+//                System.out.println("\n1. Pedir otra carta");
+//                System.out.println("2. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
+//                System.out.println("3. Salir de la mesa");
+//                System.out.println("Elija una opcion: ");
+//
+//                int opcion_int = Integer.parseInt(teclado.readLine());
+//                salidaSocket.println(opcion_int);
+//                String opcion = Integer.toString(opcion_int);
+//
+//                if ("1".equals(opcion)) {
+//                    String recibido;
+//                    while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+//                        System.out.println(recibido);
+//                    }
+//                } else if ("2".equals(opcion)) {
+//                    recibido = entradaSocket.readLine();
+//                    System.out.println(recibido);
+//                    plantarse = true;
+//                } else if ("3".equals(opcion)) {
+//                    salidaSocket.println("/quit");
+//                    break;
+//                } else {
+//                    recibido = entradaSocket.readLine();
+//                    System.out.println(recibido);
+//                }
+//
+//                recibido = entradaSocket.readLine();
+//                if (recibido.startsWith("Te has pasado de 21")) {
+//                    recibido = entradaSocket.readLine();
+//                    System.out.println(recibido);
+//                    break;
+//                }
+//
+//            } while (valorMano <= 21 && !plantarse);
+//
+//        } catch (IOException e) {
+//            System.out.println("Exception: " + e);
+//            System.out.println("Message: " + e.getMessage());
+//            e.printStackTrace(System.err);
+//
+//        }
+//    }
 }

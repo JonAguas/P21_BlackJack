@@ -42,6 +42,7 @@ public class Carta implements Serializable{
     public void setPalo(PaloCarta palo) {
         this.palo = palo;
     }
+    
 
     @Override
     public String toString() {
