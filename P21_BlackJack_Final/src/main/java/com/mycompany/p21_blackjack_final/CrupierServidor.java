@@ -99,7 +99,9 @@ public class CrupierServidor {
                 out.println("El valor de la mano del crupier es " + valorManoCrupier);
 
                 List<Carta> manoJugador = juego.repartirCartaJugador();
-                int valorMano = juego.valorMano(manoJugador);
+                int[] valorMano = new int[1];
+                valorMano[0] = juego.valorMano(manoJugador);
+                System.out.println(valorMano[0]);
                 // Enviar las cartas al jugador
                 StringBuilder sb = new StringBuilder();
                 sb.append("Tus cartas son: ");
@@ -112,7 +114,7 @@ public class CrupierServidor {
 
                 //enviamos el valor de la mano
                 sb = new StringBuilder();
-                out.println(sb.append(valorMano).toString());
+                out.println(sb.append(valorMano[0]).toString());
 
 //                -------------------------------------------------------------------- Hasta aquí bien
                 // El servidor se encarga de enviar el menú al cliente
@@ -123,21 +125,16 @@ public class CrupierServidor {
 
                 //leemos las opciones del jugador y las mostramos en el servidor
                 System.out.println("Opcion recibida del jugador " + name + ": " + opcion);
-                resultados = menu1(apuesta,name, opcion, out, juego, manoJugador, valorMano);
+                resultados = menu1(apuesta, name, opcion, out, juego, manoJugador, valorMano);
                 plantarse = resultados[0];
                 salirMesa = resultados[1];
 
-                while (!salirMesa) { // El primer menú se ejecuta sí o sí, el segundo depende de si se ha plantado o salido de la mesas
-                    if (plantarse) {
-                        jugadorSePlanta(out, valorMano, valorManoCrupier, manoCrupier, juego);
-                    } else if (!salirMesa) {
-                        opcion = in.next();
-                        System.out.println("Opcion recibida del jugador " + name + ": " + opcion);
-                        resultados = menu2(opcion, out, juego, manoJugador, valorMano);
-                        plantarse = resultados[0];
-                        salirMesa = resultados[1];
-                    }
+                if (plantarse) { //si se planta de primeras
+                    jugadorSePlanta(out, valorMano, valorManoCrupier, manoCrupier, juego);
                 }
+
+                menu2(opcion, in, out, juego, manoJugador, valorMano, valorManoCrupier, manoCrupier);
+
             } catch (Exception e) {
                 System.out.println("Exception: " + e);
                 System.out.println("Message: " + e.getMessage());
@@ -165,23 +162,23 @@ public class CrupierServidor {
     }
 
     // ESTO EN NINGÚN MOMENTO SE EJECUTA, SE EJECUTAN LOS MENUS QUE ESTÁN DENTRO DEL CLIENTE
-    private static boolean[] menu1(int apuesta, String name, String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
+    private static boolean[] menu1(int apuesta, String name, String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int[] valorManoActual) {
         StringBuilder sb = new StringBuilder();
         boolean plantarse = false;
         boolean salir = false;
 
         if ("1".equals(opcion)) {
             Carta cartaNueva = juego.pedirCarta(manoJugador);
-            valorManoActual = juego.valorMano(manoJugador);
+            valorManoActual[0] = juego.valorMano(manoJugador);
             sb.append("Tu carta es ");
             sb.append(cartaNueva).append("\n");
-            sb.append("Ahora el valor de tu mano es " + Integer.toString(valorManoActual));
+            sb.append("Ahora el valor de tu mano es " + Integer.toString(valorManoActual[0]));
         } else if ("2".equals(opcion)) {
             apuesta *= 2;
             sb.append("Se ha doblado tu apuesta a: " + apuesta + "€");
             System.out.println(name + " ha doblado su apuesta a: " + apuesta + "€");
         } else if ("3".equals(opcion)) {
-            sb.append("Te has plantado con " + valorManoActual);
+            sb.append("Te has plantado con " + valorManoActual[0]);
             plantarse = true;
         } else if ("4".equals(opcion)) { //que meter aqui
             sb.append("Has salido de la mesa");
@@ -190,7 +187,7 @@ public class CrupierServidor {
             sb.append("Opcion incorrecta");
         }
 
-        if (valorManoActual > 21) {
+        if (valorManoActual[0] > 21) {
             sb.append("\nTe has pasado de 21, has perdido tu apuesta!");
             salir = true;
         }
@@ -204,51 +201,63 @@ public class CrupierServidor {
         return resultados;
     }
 
-    private static boolean[] menu2(String opcion, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int valorManoActual) {
+    private static void menu2(String opcion, Scanner in, PrintWriter out, JuegoCartas juego, List<Carta> manoJugador, int[] valorManoActual, int valorManoCrupier, List<Carta> manoCrupier) {
         StringBuilder sb = new StringBuilder();
         boolean plantarse = false;
-        boolean salir = false;
+        boolean salirMesa = false;
 
-        if ("1".equals(opcion)) {
-            Carta cartaNueva = juego.pedirCarta(manoJugador);
-            valorManoActual = juego.valorMano(manoJugador);
-            sb.append("Tu carta es ");
-            sb.append(cartaNueva).append("\n");
-            sb.append("Ahora el valor de tu mano es " + Integer.toString(valorManoActual));
+        while (!salirMesa && !plantarse) { // El primer menú se ejecuta sí o sí, el segundo depende de si se ha plantado o salido de la mesas
+            opcion = in.next();
+            System.out.println("Opcion recibida del jugador: " + opcion);
+            if ("1".equals(opcion)) {
+                Carta cartaNueva = juego.pedirCarta(manoJugador);
+                valorManoActual[0] = juego.valorMano(manoJugador);
+                sb.append("Tu carta es ");
+                sb.append(cartaNueva).append("\n");
+                sb.append("Ahora el valor de tu mano es " + Integer.toString(valorManoActual[0]));
 
-        } else if ("2".equals(opcion)) {
-            sb.append("Te has plantado con " + valorManoActual);
-            plantarse = true;
-        } else if ("3".equals(opcion)) {
-            sb.append("Has salido de la mesa");
-            salir = true;
-        } else {
-            sb.append("Opcion incorrecta");
+            } else if ("2".equals(opcion)) {
+                sb.append("Te has plantado con " + valorManoActual[0]);
+                plantarse = true;
+            } else if ("3".equals(opcion)) {
+                sb.append("Has salido de la mesa");
+                salirMesa = true;
+            } else {
+                sb.append("Opcion incorrecta");
+            }
+
+            if (valorManoActual[0] > 21) {
+                sb.append("\nTe has pasado de 21, has perdido tu apuesta!");
+                salirMesa = true;
+            }
+            out.println(sb.toString());
+            out.println();
+        }
+        System.out.println("valor mano: " + valorManoActual[0]);
+
+        if (plantarse) { //comprobamos si se planta el jugador
+            jugadorSePlanta(out, valorManoActual, valorManoCrupier, manoCrupier, juego);
         }
 
-        if (valorManoActual > 21) {
-            sb.append("\nTe has pasado de 21, has perdido tu apuesta!");
-            salir = true;
-        }
-
-        out.println(sb.toString());
-        out.println();
-
-        boolean[] resultados = new boolean[2];
-        resultados[0] = plantarse;
-        resultados[1] = salir;
-        return resultados;
     }
-    
-    private static void jugadorSePlanta(PrintWriter out, int valorManoJugador, int valorManoCrupier, List<Carta> manoCrupier, JuegoCartas juego){
+
+    private static void jugadorSePlanta(PrintWriter out, int[] valorManoJugador, int valorManoCrupier, List<Carta> manoCrupier, JuegoCartas juego) {
         StringBuilder sb = new StringBuilder();
-        while(valorManoCrupier<17){
+        while (valorManoCrupier < 17) {
             Carta nuevaCarta = juego.pedirCarta(manoCrupier);
-            manoCrupier.add(nuevaCarta);
             sb.append("El crupier obtiene el: " + nuevaCarta.toString());
+            sb.append("\n");
             valorManoCrupier = juego.valorMano(manoCrupier);
-            sb.append("Ahora el valor de su mano es de: " + valorManoCrupier);
         }
+        sb.append("Valor mano crupier: " + valorManoCrupier);
+        if (valorManoCrupier > 21) {
+            sb.append("\nEl crupier se ha pasado de 21\nHAS GANADO!!!");
+        } else if (valorManoCrupier > valorManoJugador[0]) {
+            sb.append("\nEl crupier tiene mejor mano\nHAS PERDIDO!!!");
+        } else if (valorManoCrupier > valorManoJugador[0]) {
+            sb.append("\nTienes mejor mano que el crupier\nHAS GANADO!!!");
+        }
+
         out.println(sb.toString());
         out.println();
     }

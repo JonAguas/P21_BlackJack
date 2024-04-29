@@ -81,10 +81,14 @@ public class JugadorCliente {
             salidaSocket.println(opcion1);
 
             boolean salir = false;
+            boolean plantarse = false;
             recibido = entradaSocket.readLine();
-            if (recibido.startsWith("Has salido de la mesa") || recibido.startsWith("Te has plantado")) {
+            if (recibido.startsWith("Has salido de la mesa")) {
                 System.out.println(recibido);
                 salir = true;
+            } else if (recibido.startsWith("Te has plantado")) {
+                System.out.println(recibido);
+                plantarse = true;
             } else {
                 System.out.println(recibido);
                 while (!(recibido = entradaSocket.readLine()).isEmpty()) {
@@ -96,7 +100,7 @@ public class JugadorCliente {
             }
 
             // Mostrar el menu2 desde el servidor:
-            while (!salir) {
+            while (!salir && !plantarse) {
                 System.out.println("\n1. Pedir otra carta");
                 System.out.println("2. Plantarse"); // Que no vuelva a salir el menú cuando me planto --> comparo con el crupier
                 System.out.println("3. Salir de la mesa");
@@ -106,9 +110,12 @@ public class JugadorCliente {
                 salidaSocket.println(opcion2);
 
                 recibido = entradaSocket.readLine();
-                if (recibido.startsWith("Has salido de la mesa") || recibido.startsWith("Te has plantado")) {
+                if (recibido.startsWith("Has salido de la mesa")) {
                     System.out.println(recibido);
                     salir = true;
+                } else if (recibido.startsWith("Te has plantado")) {
+                    System.out.println(recibido);
+                    plantarse = true;
                 } else {
                     System.out.println(recibido);
                     while (!(recibido = entradaSocket.readLine()).isEmpty()) {
@@ -117,6 +124,15 @@ public class JugadorCliente {
                         }
                         System.out.println(recibido);
                     }
+                }
+            }
+
+            //compara con el crupier si ha ganado o ha perdido
+            if (plantarse) {
+                recibido = entradaSocket.readLine();
+                System.out.println(recibido);
+                while (!(recibido = entradaSocket.readLine()).isEmpty()) {
+                    System.out.println(recibido);
                 }
             }
 
